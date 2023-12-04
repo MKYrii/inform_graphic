@@ -249,7 +249,6 @@ def main_window():
         current_tab, path, image = get_current_data()
         if not current_tab:
             return
-        image = image.convert("CMYK")
         image = image.convert("L")
         update_image_inside_app(current_tab, image)
     def selection_area():
