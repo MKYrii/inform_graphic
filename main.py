@@ -32,6 +32,8 @@ def main_window():
         rotate_menu = Menu(edit_menu, tearoff=0)
         rotate_menu.add_command(label='Rotate left by 90', command= lambda: rotate_image(90))
         rotate_menu.add_command(label='Rotate right by 90', command=lambda: rotate_image(-90))
+        rotate_menu.add_command(label='Rotate left by 180', command=lambda: rotate_image(180))
+        rotate_menu.add_command(label='Rotate right by 180', command=lambda: rotate_image(-180))
 
         flip_menu = Menu(edit_menu, tearoff=0)
         flip_menu.add_command(label='Flip horisontally', command=lambda: flip_image('horisontally'))
@@ -51,6 +53,7 @@ def main_window():
         filter_menu.add_command(label='Smooth', command=lambda : apply_filter(ImageFilter.SMOOTH))
         filter_menu.add_command(label='Contour', command=lambda : apply_filter(ImageFilter.CONTOUR))
         filter_menu.add_command(label='Emboss', command=lambda : apply_filter(ImageFilter.EMBOSS))
+        filter_menu.add_command(label='White and black', command=make_white_and_black)
 
         crop_menu = Menu(edit_menu, tearoff=0)
         crop_menu.add_command(label='Start selection', command=lambda : selection_area())
@@ -198,7 +201,7 @@ def main_window():
         if not current_tab:
             return
 
-        image = image.rotate(degrees) # поворачиваем на градусы = degrees
+        image = image.rotate(degrees, expand=True) # поворачиваем на градусы = degrees
         update_image_inside_app(current_tab, image)
 
     def flip_image(flip_type):
@@ -238,6 +241,16 @@ def main_window():
         if not current_tab:
             return
         image = image.filter(filter_type)
+        update_image_inside_app(current_tab, image)
+    def make_white_and_black():
+        '''
+        Делает картинку черно-белой
+        '''
+        current_tab, path, image = get_current_data()
+        if not current_tab:
+            return
+        image = image.convert("CMYK")
+        image = image.convert("L")
         update_image_inside_app(current_tab, image)
     def selection_area():
         '''
