@@ -74,17 +74,15 @@ def main_window():
         image = Image.open(image_path) # Открывает картинку как pillow
         image_tk = ImageTk.PhotoImage(image) # Открывает картинку как tkinter
         opened_images.append([image_path, image]) # Добавляем в список открытых картинок
-        image_tab = Frame(image_tabes)
+        image_tab = Frame(image_tabes) # Создаем рабочую область на добавленной вкладке  ??? change black area
 
+        # Создаем холст и размещаем на нем картинку
         image_panel = Canvas(image_tab, width=image_tk.width(), height=image_tk.height(), bd=0, highlightthickness=0)
         image_panel.image = image_tk
         image_panel.create_image(0, 0, image=image_tk, anchor='nw')
         image_panel.pack(expand='yes')
 
-        #image_label = Label(image_tab, image=image_tk)
-        #image_label.image = image_tk
-        #image_label.pack()
-
+        # Добавляем новую вкладку и ее название-название картинки
         image_tabes.add(image_tab, text=image_path.split('/')[-1])
         image_tabes.select(image_tab)
 
@@ -93,9 +91,9 @@ def main_window():
         Повторное открытие картинки, после ее сохранения
         """
         #image_path = filedialog.askopenfilename(filetypes=(('Images', '*.jpg;*.png;*.jpg'), )) # Принимает путь картинки
-        image = Image.open(image_path) # Открывает картинку как pillow
-        image_tk = ImageTk.PhotoImage(image) # Открывает картинку как tkinter
-        opened_images.append([image_path, image]) # Добавляем в список открытых картинок
+        image = Image.open(image_path)
+        image_tk = ImageTk.PhotoImage(image)
+        opened_images.append([image_path, image])
         image_tab = Frame(image_tabes)
 
         image_panel = Canvas(image_tab, width=image_tk.width(), height=image_tk.height(), bd=0, highlightthickness=0)
@@ -111,12 +109,11 @@ def main_window():
         Возврашяет три параметра - (current_tab, image, path) открытую вкладку, картинку, путь до картинки
         '''
         current_tab = image_tabes.select()  # Получаем открытую в данный момент вкладку
-
         if not current_tab:  # Если не выделена никакая вкладка, то выходим из метода
             return None, None, None
 
         tab_number = image_tabes.index(current_tab)  # Индекс открытой вкладки
-        path, image = opened_images[tab_number]
+        path, image = opened_images[tab_number] # Путь и картинка активной вкладки
         return current_tab, path, image
 
     def save_image():
@@ -124,13 +121,12 @@ def main_window():
         Функция сохранения фотографии
         '''
         current_tab, path, image = get_current_data()
-
         if not current_tab: # Если не выделена никакая вкладка, то выходим из метода
             return
 
         tab_number = image_tabes.index(current_tab) # Индекс открытой вкладки
         old_path, old_ext = os.path.splitext(path)  # Адрес откуды была открвта картинка, разрешение которое имела картинка
-        new_path = filedialog.asksaveasfilename(initialdir=old_path, filetypes=(('Images', '*.jpg;*.png;*.jpg'), )) # Путь в какую папку будем сохранять
+        new_path = filedialog.asksaveasfilename(initialdir=old_path, filetypes=(('Images', '*.jpg;*.png;*.jpg'), )) # Путь в какую папку в которую будем сохранять
 
         if not new_path: # Если путь не изменен, сохраняем
             return
@@ -151,12 +147,14 @@ def main_window():
         open_picture_after_saving(new_path + new_ext) # Открываем ее заново, уже с новым именем
 
     def save_current_image():
+        '''
+        Сохранение текущей картинки без запроса путя - замена картинки на новый вариант
+        '''
         current_tab, path, image = get_current_data()
-
-        if not current_tab:  # Если не выделена никакая вкладка, то выходим из метода
+        if not current_tab:
             return
 
-        tab_number = image_tabes.index(current_tab)  # Индекс открытой вкладки
+        tab_number = image_tabes.index(current_tab)
         path, image = opened_images[tab_number]
         opened_images[tab_number][0] = path
         image.save(path)
@@ -172,13 +170,16 @@ def main_window():
         Функция закрытия картинки
         '''
         current_tab, path, image = get_current_data()
-        if not current_tab: # Если не выделена никакая вкладка, то выходим из метода
+        if not current_tab:
             return
-        tab_number = image_tabes.index(current_tab)  # Индекс открытой вкладки
+        tab_number = image_tabes.index(current_tab)
         del opened_images[tab_number] # Удаляем картинку из списка открытых
-        image_tabes.forget(current_tab) # Удаляем вкладку с сохраненной картинкой
+        image_tabes.forget(current_tab) # Удаляем вкладку
 
     def update_image_inside_app(current_tab, image):
+        '''
+        Обновление картинки после какого-то изменения
+        '''
         tab_number = image_tabes.index(current_tab)  # Индекс открытой вкладки
         tab_frame = image_tabes.children[current_tab[current_tab.rfind('!'):]]
         canvas = tab_frame.children['!canvas']
@@ -190,18 +191,22 @@ def main_window():
         canvas.configure(width=image_tk.width(), height=image_tk.height())
         canvas.create_image(0, 0, image=image_tk, anchor="nw")
     def rotate_image(degrees):
+        '''
+        Поворот картинки
+        '''
         current_tab, path, image = get_current_data()
-
-        if not current_tab:  # Если не выделена никакая вкладка, то выходим из метода
+        if not current_tab:
             return
 
         image = image.rotate(degrees) # поворачиваем на градусы = degrees
         update_image_inside_app(current_tab, image)
 
     def flip_image(flip_type):
+        '''
+        Отзеркаливание картинки
+        '''
         current_tab, path, image = get_current_data()
-
-        if not current_tab:  # Если не выделена никакая вкладка, то выходим из метода
+        if not current_tab:
             return
 
         if flip_type == 'horisontally':
@@ -211,9 +216,11 @@ def main_window():
         update_image_inside_app(current_tab, image)
 
     def resize_image(persents):
+        '''
+        Изменение размера картинки
+        '''
         current_tab, path, image = get_current_data()
-
-        if not current_tab:  # Если не выделена никакая вкладка, то выходим из метода
+        if not current_tab:
             return
 
         width, hight = image.size
@@ -224,12 +231,18 @@ def main_window():
         update_image_inside_app(current_tab, image)
 
     def apply_filter(filter_type):
+        '''
+        Фильтры
+        '''
         current_tab, path, image = get_current_data()
         if not current_tab:
             return
         image = image.filter(filter_type)
         update_image_inside_app(current_tab, image)
     def selection_area():
+        '''
+        Выделение произвольной области
+        '''
         current_tab = image_tabes.select()
         if not current_tab:
             return
@@ -241,18 +254,27 @@ def main_window():
         selection_rect = canvas.create_rectangle(selection_top_x, selection_bottom_x, selection_top_y, selection_bottom_y,
                                                  dash=(10,10), fil='', outline='white', width=2)
 
-        canvas.bind("<Button-1>", get_selection_start_pos)
-        canvas.bind("<B1-Motion>", update_selection_and_pos)
+        canvas.bind("<Button-1>", get_selection_start_pos) # Событие - нажатие левой кнопки мыши
+        canvas.bind("<B1-Motion>", update_selection_and_pos) # Событие - передвижение курсора
 
     def get_selection_start_pos(event):
+        '''
+        Получение коорлинат начала области выделения при нажатии левой кнопки мыши
+        '''
         global selection_top_x, selection_top_y
         selection_top_x, selection_top_y = event.x, event.y
     def update_selection_and_pos(event):
+        '''
+        Получение выделенной области по координатам
+        '''
         global selection_bottom_x, selection_bottom_y, canvas_for_selection, selection_rect
         selection_bottom_x, selection_bottom_y = event.x, event.y
         if canvas_for_selection is not None and selection_rect is not None:
             canvas_for_selection.coords(selection_rect, selection_top_x, selection_top_y, selection_bottom_x, selection_bottom_y)
     def stop_area_selection():
+        '''
+        Обрезание картинки удаление данных по области выделения
+        '''
         global canvas_for_selection, selection_rect, selection_top_x, selection_top_y, selection_bottom_x, selection_bottom_y
         canvas_for_selection.unbind("<Button-1>")
         canvas_for_selection.unbind("<B1-Motion>")
@@ -264,8 +286,11 @@ def main_window():
         canvas_for_selection = None
         selection_top_x, selection_top_y, selection_bottom_x, selection_bottom_y =0, 0, 0, 0
     def crop_image():
+        '''
+        Обрезание картинки
+        '''
         current_tab, path, image = get_current_data()
-        if not current_tab:  # Если не выделена никакая вкладка, то выходим из метода
+        if not current_tab:
             return
         image = image.crop((selection_top_x, selection_top_y, selection_bottom_x, selection_bottom_y))
         update_image_inside_app(current_tab, image)
@@ -294,6 +319,7 @@ def main_window():
     btn_light.place(x=length // 4 * 3 - 60, y=int(width * 0.35) // 4 - 20)
     btn_contrast.place(x=length // 4 * 3 - 60, y=int(width * 0.35) // 4 * 3 - 20)
 
+    # Координаты квадрата для выделения области
     global selection_top_x
     selection_top_x = 0
     global selection_top_y
@@ -304,7 +330,7 @@ def main_window():
     selection_bottom_y = 0
     global canvas_for_selection
     canvas_for_selection = None
-    global selection_rect
+    global selection_rect # Выделенный прямоугольник
     selection_rect = None
 
     root.bind("<Escape>", close(root))
