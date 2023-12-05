@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 from tkinter.ttk import Notebook
 
 import PIL
@@ -102,6 +102,8 @@ def main_window():
 
         menuu_bar.add_cascade(label='Lighting', menu=lighting_menu)
         menuu_bar.add_cascade(label='Contrast', menu=contrast_menu)
+
+        text_btn = menuu_bar.add_command(label='Text', command=lambda: draw_text())
 
         root.configure(menu=menuu_bar)
 
@@ -449,6 +451,33 @@ def main_window():
 
         update_image_inside_app(current_tab, image)
 
+    #  отмена функции ввода
+    def passer(eventorigin):
+        pass
+
+    #  по нажатию ЛКМ пишет текст
+    def draw_text():
+        current_tab, path, image = get_current_data()
+        if not current_tab:
+            return
+
+        def getorigin(eventorigin):
+            current_tab, path, image = get_current_data()
+            if not current_tab:
+                return
+            global x, y, entr
+            x = eventorigin.x
+            y = eventorigin.y
+            draw = ImageDraw.Draw(image)
+            draw.text((x, y), entr.get(), fill="black")
+            update_image_inside_app(current_tab, image)
+            entr.delete(0, END)
+            root.bind("<Button 1>", passer)
+
+        root.bind("<Button 1>", getorigin)
+        update_image_inside_app(current_tab, image)
+
+
     root = Tk()
     root.title('photo_editor')
     width, length = 650, 600
@@ -462,6 +491,11 @@ def main_window():
     image_tabes = Notebook(root) # Создаем панель для работы со вкладками
     image_tabes.enable_traversal() # Отвечает зя клавиши для переключения между вкладками
     opened_images = [] # Список с открытыми изображениями
+
+    # не получается разместить его в норм месте
+    global entr
+    entr = ttk.Entry()  # поле ввода текста
+    entr.pack(anchor=NE)
 
     btn_cut = Button(control, width=18, height=3, text='Обрезка фото', fg='black', bg='white', command=cut)
     btn_filters = Button(control, width=18, height=3, text='Фильтры', fg='black', bg='white', command=filters)
