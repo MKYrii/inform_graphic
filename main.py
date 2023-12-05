@@ -469,7 +469,7 @@ def main_window():
             x = eventorigin.x
             y = eventorigin.y
             draw = ImageDraw.Draw(image)
-            draw.text((x, y), entr.get(), fill="black")
+            draw.text((x, y), entr.get(), fill='black')
             update_image_inside_app(current_tab, image)
             entr.delete(0, END)
             root.bind("<Button 1>", passer)
@@ -480,14 +480,14 @@ def main_window():
 
     root = Tk()
     root.title('photo_editor')
-    width, length = 650, 600
+    width, length = 640, 1000
     root.geometry(f"{length}x{width}")
-    control = Frame(root, height=int(width * 0.35), width=length, bg='#b900b7')
+    # control = Frame(root, height=int(width * 0.35), width=length, bg='#b900b7')
     #photo = Frame(root, height=int(width * 0.65), width=length, bg='#ffc7ff')
-    control.pack(side='bottom')
+    # control.pack(side='bottom')
     #photo.pack(side='top')
-    ctrl = Canvas(control, height=int(width * 0.35), width=length, bg='#b900b7')
-    ctrl.create_line(length // 2, 0, length // 2, int(width * 0.35))
+    # ctrl = Canvas(control, height=int(width * 0.35), width=length, bg='#b900b7')
+    # ctrl.create_line(length // 2, 0, length // 2, int(width * 0.35))
     image_tabes = Notebook(root) # Создаем панель для работы со вкладками
     image_tabes.enable_traversal() # Отвечает зя клавиши для переключения между вкладками
     opened_images = [] # Список с открытыми изображениями
@@ -497,15 +497,15 @@ def main_window():
     entr = ttk.Entry()  # поле ввода текста
     entr.pack(anchor=NE)
 
-    btn_cut = Button(control, width=18, height=3, text='Обрезка фото', fg='black', bg='white', command=cut)
-    btn_filters = Button(control, width=18, height=3, text='Фильтры', fg='black', bg='white', command=filters)
-    btn_light = Button(control, width=18, height=3, text='Свет', fg='black', bg='white', command=light)
-    btn_contrast = Button(control, width=18, height=3, text='Контраст', fg='black', bg='white', command=contrast)
-
-    btn_cut.place(x=length // 4 - 60, y=int(width * 0.35) // 4 - 20)
-    btn_filters.place(x=length // 4 - 60, y=int(width * 0.35) // 4 * 3 - 20)
-    btn_light.place(x=length // 4 * 3 - 60, y=int(width * 0.35) // 4 - 20)
-    btn_contrast.place(x=length // 4 * 3 - 60, y=int(width * 0.35) // 4 * 3 - 20)
+    # btn_cut = Button(control, width=18, height=3, text='Обрезка фото', fg='black', bg='white', command=cut)
+    # btn_filters = Button(control, width=18, height=3, text='Фильтры', fg='black', bg='white', command=filters)
+    # btn_light = Button(control, width=18, height=3, text='Свет', fg='black', bg='white', command=light)
+    # btn_contrast = Button(control, width=18, height=3, text='Контраст', fg='black', bg='white', command=contrast)
+    #
+    # btn_cut.place(x=length // 4 - 60, y=int(width * 0.35) // 4 - 20)
+    # btn_filters.place(x=length // 4 - 60, y=int(width * 0.35) // 4 * 3 - 20)
+    # btn_light.place(x=length // 4 * 3 - 60, y=int(width * 0.35) // 4 - 20)
+    # btn_contrast.place(x=length // 4 * 3 - 60, y=int(width * 0.35) // 4 * 3 - 20)
 
     # Координаты квадрата для выделения области
     global selection_top_x
@@ -522,7 +522,7 @@ def main_window():
     selection_rect = None
 
     root.bind("<Escape>", close(root))
-    ctrl.pack()
+    # ctrl.pack()
     small_manu(root)
     image_tabes.pack(fill='both', expand=1) # Вкладки с картинками
     root.mainloop()
